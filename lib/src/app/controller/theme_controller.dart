@@ -39,6 +39,18 @@ class ThemeController extends StateXController {
     return _darkMode.isDarkMode;
   }
 
+  /// Supply the indicator
+  bool get useMaterial3 => UseMaterial3().useMaterial3;
+
+  /// Toggle the 'Use Material 3' setting
+  void material3() {
+    final use = UseMaterial3();
+    use.useMaterial3 = !use.useMaterial3;
+  }
+
+  /// Tile to supply the app's 'Use Material 3' setting.
+  Widget get useMaterial3ListTile => UseMaterial3().useMaterial3ListTile;
+
   /// Interface components on the left side or right side
   Widget get onLeftSideSwitch =>
       Text('${OnLeftSide().leftSided ? 'Left' : 'Right'} Sided'.tr);

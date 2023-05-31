@@ -12,24 +12,32 @@ class DemoApp extends AppStatefulWidget {
 
   // This is the 'App State object' of the application.
   @override
-  AppState createAppState() => _AppState();
+  AppState createAppState() => _DemoAppState();
 }
 
-/// This is the 'View' of the application.
-/// The 'look and behavior' of the app.
-class _AppState extends AppState {
+/// This is the State object for the app.
+class _DemoAppState extends AppState {
   ///
-  _AppState()
+  _DemoAppState()
       : super(
           controller: DemoController(),
           controllers: [
             ThemeController(),
-            ContactsController(),
           ],
           debugShowCheckedModeBanner: false,
+          inTheme: () =>
+              ThemeData(useMaterial3: ThemeController().useMaterial3),
           // debugPaintSizeEnabled: true,
           title: 'Contacts App Demo',
           switchUI: Prefs.getBool('switchUI'),
+          // inErrorHandler: (details) =>
+          //     _firebaseCrashlytics.recordFlutterError(details),
+          localizationsDelegates: [
+            L10n.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+          ],
           inSupportedLocales: () {
             /// The app's translations
             L10n.translations = {
@@ -42,19 +50,52 @@ class _AppState extends AppState {
             };
             return L10n.supportedLocales;
           },
-          localizationsDelegates: [
-            L10n.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-          ],
-        );
-
-  @override
-  Locale? onLocale() {
-    return (controller as DemoController).appLocale();
+          home: const ContactsList(),
+        ) {
+    // Supply a reference to the App State's controller.
+    con = controller as DemoController;
   }
 
+  late DemoController con;
+
+  // /// Perform any Asynchronous operations
+  // @override
+  // Future<bool> initAsync() async {
+  //   //
+  //   await super.initAsync();
+  //
+  //   // Allow for binding
+  //   WidgetsFlutterBinding.ensureInitialized();
+  //
+  //   /// Incorporate FirebaseCrashlytics into the app.
+  //   await Firebase.initializeApp(
+  //     options: DefaultFirebaseOptions.currentPlatform,
+  //   );
+  //
+  //   // Supply Firebase Crashlytics
+  //   _firebaseCrashlytics = FirebaseCrashlytics.instance;
+  //
+  //   return true;
+  // }
+  //
+  // static late FirebaseCrashlytics _firebaseCrashlytics;
+  //
+  // /// Run the provided Error Handler if any.
+  // @override
+  // void onErrorHandler(FlutterErrorDetails details) =>
+  //     _firebaseCrashlytics.recordFlutterError(details);
+  //
+  // /// If there's a error reporting routine available.
+  // @override
+  // Future<void> onErrorReport(Object exception, StackTrace stack) async {
+  //   //
+  //   await _firebaseCrashlytics.recordError(exception, stack);
+  //
+  //   // If true, then crash reporting data is sent to Firebase.
+  //   await _firebaseCrashlytics
+  //       .setCrashlyticsCollectionEnabled(!App.inDebugMode);
+  // }
+
   @override
-  Widget onHome() => (controller as DemoController).onHome();
+  Locale? onLocale() => con.appLocale();
 }

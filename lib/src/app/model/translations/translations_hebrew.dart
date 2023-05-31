@@ -40,4 +40,5 @@ Map<String, String> heIL = {
   'to Light Mode': 'למצב אור',
   'Right Sided': 'צד ימין',
   'Left Sided': 'צד שמאל',
+  'Use Material 3': 'השתמש בחומר 3',
 };

@@ -21,8 +21,6 @@ export 'tests/menu/open_menu.dart';
 
 export 'tests/menu/about_menu.dart';
 
-export 'tests/menu/app_menu.dart';
-
 export 'tests/menu/interface_menu.dart';
 
 export 'tests/menu/locale_menu.dart';

@@ -1,4 +1,5 @@
 //
+
 import 'package:contacts_demo/src/view.dart';
 
 import 'package:contacts_demo/src/model.dart';
@@ -37,11 +38,20 @@ class _AddContactState extends StateX<AddContact> {
     super.dispose();
   }
 
-  // Use the appropriate interface depending on the platform.
-  // Called everytime the setState() function is called.
+  /// Android interface
   @override
-  Widget build(BuildContext context) =>
-      App.useMaterial ? _BuildAndroid(state: this) : _BuildiOS(state: this);
+  Widget buildAndroid(BuildContext context) => _BuildAndroid(state: this);
+
+  /// iOS interface
+  @override
+  Widget buildiOS(BuildContext context) => _BuildiOS(state: this);
+
+  @override
+  void onError(details) {
+    if (kDebugMode) {
+      print("Handle error in this 'Contacts List' State object!");
+    }
+  }
 }
 
 /// The Android interface.
@@ -51,6 +61,7 @@ class _BuildAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+//    throw 'Error in the build() function and see what happens!';
     final widget = state.widget;
     final contact = state.contact;
     return Scaffold(

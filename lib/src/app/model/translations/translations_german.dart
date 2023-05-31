@@ -40,4 +40,5 @@ Map<String, String> deDE = {
   'to Light Mode': 'in den Lichtmodus',
   'Right Sided': 'Rechtsseitig',
   'Left Sided': 'Linksseitig',
+  'Use Material 3': 'Verwenden Sie Material 3',
 };

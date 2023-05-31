@@ -5,7 +5,7 @@ import 'package:contacts_demo/src/model.dart';
 
 import 'package:contacts_demo/src/view.dart';
 
-import 'add_contact.dart' show AddContact;
+import 'contact_add.dart' show AddContact;
 
 import 'contact_details.dart' show ContactDetails;
 
@@ -28,7 +28,6 @@ class _ContactListState extends StateX<ContactsList> {
     con = controller as ContactsController;
   }
   late ContactsController con;
-
   @override
   void initState() {
     super.initState();
@@ -38,8 +37,17 @@ class _ContactListState extends StateX<ContactsList> {
   late DemoController appCon;
 
   @override
-  Widget build(BuildContext context) =>
-      App.useMaterial ? _forAndroid(this) : _foriOS(this);
+  Widget buildAndroid(BuildContext context) => _forAndroid(this);
+
+  @override
+  Widget buildiOS(BuildContext context) => _foriOS(this);
+
+  @override // _ContactListState StateX
+  void onError(details) {
+    if (kDebugMode) {
+      print("Handle error in this 'Contacts List' State object!");
+    }
+  }
 }
 
 Widget _forAndroid(_ContactListState state) {
@@ -85,7 +93,8 @@ Widget _forAndroid(_ContactListState state) {
           await Navigator.of(state.context).push(MaterialPageRoute<void>(
             builder: (_) => const AddContact(),
           ));
-          await con.refresh();
+          await con.getContacts();
+          state.setState(() {});
         },
         child: const Icon(Icons.add),
       ),
@@ -117,8 +126,9 @@ Widget _forAndroid(_ContactListState state) {
                       content: Text('You $action an item.'.tr),
                       action: SnackBarAction(
                           label: 'UNDO',
-                          onPressed: () {
-                            contact.undelete();
+                          onPressed: () async {
+                            await contact.undelete();
+                            await con.getContacts();
                             state.setState(() {});
                           }),
                     );
@@ -171,7 +181,8 @@ Widget _foriOS(_ContactListState state) {
                     .push(CupertinoPageRoute<void>(
                   builder: (_) => const AddContact(),
                 ));
-                await con.refresh();
+                await con.getContacts();
+                state.setState(() {});
               },
             ),
           ),
@@ -208,8 +219,8 @@ Widget _foriOS(_ContactListState state) {
                       content: Text('You $action an item.'),
                       action: SnackBarAction(
                           label: 'UNDO',
-                          onPressed: () {
-                            contact.undelete();
+                          onPressed: () async {
+                            await contact.undelete();
                             state.setState(() {});
                           }),
                     );
@@ -225,12 +236,12 @@ Widget _foriOS(_ContactListState state) {
                       leading: contact.displayName.circleAvatar,
                       title: contact.displayName.text,
                       onTap: () async {
-                        await Navigator.of(con.state!.context)
+                        await Navigator.of(state.context)
                             .push(MaterialPageRoute<void>(
                           builder: (_) => ContactDetails(contact: contact),
                         ));
                         await con.getContacts();
-                        con.state!.setState(() {});
+                        state.setState(() {});
                       },
                     ),
                   ),

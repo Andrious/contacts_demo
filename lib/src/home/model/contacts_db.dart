@@ -22,10 +22,10 @@ class ContactsDB extends SQLiteDB {
   @override
   int get version => 1;
 
-  ///
-  Future<bool> initState() => init();
+  /// An Asynchronous operation is involved when initializing this class.
+  Future<bool> initState() => init(); //throw 'Error in iniState()'; // init();
 
-  ///
+  /// Just to show you there's a dispose function called in the parent class.
   void dispose() => disposed();
 
   @override
@@ -191,44 +191,22 @@ class ContactsDB extends SQLiteDB {
   ///
   Future<bool> deleteContact(Contact contact) async {
     //
-    final map = contact.toMap;
-    //
-    final id = map['id'];
+    final id = contact.id.value;
 
-    if (id == null) {
-      return Future.value(false);
-    }
+    final count = await _this!
+        .rawUpdate('UPDATE Contacts SET deleted = 1 WHERE id = ?', [id]);
 
-    Map<String, dynamic> rec;
+    final deleted = count > 0;
 
-    rec = _this!.newRec('Contacts', map);
-
-    rec['deleted'] = 1;
-
-    rec = await _this!.saveMap('Contacts', rec);
-
-    if (rec.isNotEmpty) {
+    if (deleted) {
       //
-      for (final Map<String, dynamic> phone in map['phones']) {
-        //
-        rec = _this!.newRec('Phones', phone);
+      var recs = await _this!
+          .rawUpdate('UPDATE Phones SET deleted = 1 WHERE userid = ?', [id]);
 
-        rec['deleted'] = 1;
-
-        await _this!.saveMap('Phones', rec);
-      }
-
-      for (final Map<String, dynamic> email in map['emails']) {
-        //
-        rec = _this!.newRec('Emails', email);
-
-        rec['deleted'] = 1;
-
-        await _this!.saveMap('Emails', rec);
-      }
+      recs = await _this!
+          .rawUpdate('UPDATE Emails SET deleted = 1 WHERE userid = ?', [id]);
     }
-
-    return rec.isNotEmpty;
+    return deleted;
   }
 
   ///
@@ -246,17 +224,17 @@ class ContactsDB extends SQLiteDB {
       id = int.parse(id);
     }
 
-    var query =
-        await _this!.rawQuery('UPDATE Contacts SET deleted = 0 WHERE id = $id');
-    final rec = query.length;
+    final recs = await _this!
+        .rawUpdate('UPDATE Contacts SET deleted = 0 WHERE id = ?', [id]);
 
-    if (rec > 0) {
-      query =
-          await _this!.rawQuery('UPDATE Phones SET deleted = 0 WHERE id = $id');
+    if (recs > 0) {
+      //
+      var count = await _this!
+          .rawUpdate('UPDATE Phones SET deleted = 0 WHERE userid = ?', [id]);
 
-      query =
-          await _this!.rawQuery('UPDATE Emails SET deleted = 0 WHERE id = $id');
+      count = await _this!
+          .rawUpdate('UPDATE Emails SET deleted = 0 WHERE userid = ?', [id]);
     }
-    return rec;
+    return recs;
   }
 }

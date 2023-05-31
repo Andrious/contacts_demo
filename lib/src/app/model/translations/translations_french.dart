@@ -40,4 +40,5 @@ Map<String, String> frFR = {
   'to Light Mode': 'au mode lumière',
   'Right Sided': 'Côté droit',
   'Left Sided': 'Côté gauche',
+  'Use Material 3': 'Utiliser le matériel 3',
 };

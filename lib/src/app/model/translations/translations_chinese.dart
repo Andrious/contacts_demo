@@ -39,4 +39,5 @@ Map<String, String> zhCN = {
   'to Light Mode': '到光模式',
   'Right Sided': '右侧',
   'Left Sided': '左侧',
+  'Use Material 3': '使用材料 3',
 };

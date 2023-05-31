@@ -1,7 +1,8 @@
 //
 import 'package:contacts_demo/src/controller.dart';
 
-import 'package:contacts_demo/src/view.dart';
+/// Use the original 'StateX' in this Dart file and not contact_demo's
+import 'package:fluttery_framework/view.dart';
 
 import 'contact_fields.dart';
 
@@ -23,8 +24,9 @@ class Contact extends ContactEdit implements Comparable<Contact> {
   TextStyle get textStyle => TextStyle(fontSize: ContactsController().fontSize);
 
   @override
-  int compareTo(Contact other) =>
-      _givenName.value.toString().compareTo(other._givenName.value.toString());
+  int compareTo(Contact other) => _familyName.value
+      .toString()
+      .compareTo(other._familyName.value.toString());
 }
 
 ///
@@ -96,7 +98,6 @@ class ContactList extends ContactFields {
     _givenName = GivenName(ma.p('givenName'));
     _middleName = MiddleName(ma.p('middleName'));
     _familyName = FamilyName(ma.p('familyName'));
-
     _displayName = displayName(this as Contact);
     _company = Company(ma.p('company'));
     _jobTitle = JobTitle(ma.p('jobTitle'));

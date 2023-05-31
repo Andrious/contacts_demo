@@ -40,4 +40,5 @@ Map<String, String> esAR = {
   'to Light Mode': 'al modo de luz',
   'Right Sided': 'Lado derecho',
   'Left Sided': 'Lado izquierdo',
+  'Use Material 3': 'Usar material 3',
 };

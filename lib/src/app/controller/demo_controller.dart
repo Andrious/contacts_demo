@@ -1,14 +1,10 @@
 //
+
 import 'package:contacts_demo/src/controller.dart';
 
 import 'package:contacts_demo/src/model.dart';
 
-// You can see 'at a glance' this Controller also 'talks to' the interface (View).
 import 'package:contacts_demo/src/view.dart';
-
-import 'package:firebase_core/firebase_core.dart';
-
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 /// The controller for the overall app
 class DemoController extends AppController {
@@ -62,8 +58,17 @@ class DemoController extends AppController {
     Prefs.setBool('switchUI', switchUI);
   }
 
-  ///
-  Widget onHome() => const ContactsList();
+  /// Whether to use 'Material 3' theme
+  bool get useMaterial3 => ThemeController().useMaterial3;
+
+  /// Toggle the 'Use Material 3' setting
+  void material3() {
+    ThemeController().material3();
+    App.refresh();
+  }
+
+  /// Tile to supply the app's 'Use Material 3' setting.
+  Widget get useMaterial3ListTile => ThemeController().useMaterial3ListTile;
 
   /// App's Localization
   Locale appLocale() {
@@ -110,7 +115,6 @@ class DemoController extends AppController {
           if (locale != null) {
             App.locale = locale;
             await Prefs.setString('locale', locale.toLanguageTag());
-            // App.setState(() {});
             App.refresh();
           }
         });
@@ -164,7 +168,7 @@ class DemoController extends AppController {
   /// About dialogue window
   void aboutApp() => showAboutDialog(
         context: App.context!,
-        applicationName: App.state?.title ?? '',
+        applicationName: App.appState?.title ?? '',
         applicationVersion: 'version: ${App.version} build: ${App.buildNumber}',
       );
 
@@ -237,11 +241,19 @@ class DemoController extends AppController {
     // Supply Firebase Crashlytics
     final crash = FirebaseCrashlytics.instance;
 
+    const errorScreen = AppWidgetErrorDisplayed(stackTrace: true);
+
+    /// Set the error handling anywhere in your app.
+    /// The set() function is 'smart enough' ignore any subsequent calls.
+    /// Can see even set how the specified 'Error Screen' is displayed.
     _errorHandlerSet = AppErrorHandler.set(
-        handler: crash.recordFlutterError, report: crash.recordError);
+      handler: crash.recordFlutterError,
+      screen: errorScreen.builder,
+      report: crash.recordError,
+    );
 
     // If true, then crash reporting data is sent to Firebase.
-    await crash.setCrashlyticsCollectionEnabled(!App.inDebugger);
+    await crash.setCrashlyticsCollectionEnabled(!App.inDebugMode);
 
     return true;
   }

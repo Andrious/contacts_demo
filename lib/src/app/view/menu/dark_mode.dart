@@ -21,20 +21,23 @@ class DarkMode {
     return _listTile(_switch);
   }
 
-  Widget _listTile([Switch? _switch]) => ListTile(
-        leading: isDarkMode
-            ? Image.asset(
-                'assets/images/moon.png',
-                height: 30,
-                width: 26,
-              )
-            : Image.asset(
-                'assets/images/sunny.png',
-                height: 30,
-                width: 26,
-              ),
-        title: L10n.t(isDarkMode ? 'to Light Mode' : 'to Dark Mode'),
-        trailing: _switch,
+  // Wrapped by the Material widget in case this run in the Cupertino platform.
+  Widget _listTile([Switch? _switch]) => Material(
+        child: ListTile(
+          leading: isDarkMode
+              ? Image.asset(
+                  'assets/images/moon.png',
+                  height: 30,
+                  width: 26,
+                )
+              : Image.asset(
+                  'assets/images/sunny.png',
+                  height: 30,
+                  width: 26,
+                ),
+          title: L10n.t(isDarkMode ? 'to Light Mode' : 'to Dark Mode'),
+          trailing: _switch,
+        ),
       );
 
   /// Set the Dark Mode setting

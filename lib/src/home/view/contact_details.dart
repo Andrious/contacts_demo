@@ -1,9 +1,10 @@
 //
+
 import 'package:contacts_demo/src/view.dart';
 
 import 'package:contacts_demo/src/home/model/contact.dart';
 
-import 'add_contact.dart';
+import 'contact_add.dart';
 
 ///
 enum AppBarBehavior {
@@ -41,8 +42,10 @@ class _DetailsState extends StateX<ContactDetails> {
   late Contact contact;
 
   @override
-  Widget build(BuildContext context) =>
-      App.useMaterial ? _BuildAndroid(state: this) : _BuildiOS(state: this);
+  Widget buildAndroid(BuildContext context) => _BuildAndroid(state: this);
+
+  @override
+  Widget buildiOS(BuildContext context) => _BuildiOS(state: this);
 
   // Provide a means to 'edit' the details
   Future<void> editContact(Contact? contact, BuildContext context) async {
@@ -72,7 +75,13 @@ class _BuildAndroid extends StatelessWidget {
   Widget build(BuildContext context) {
     final contact = state.contact;
     // Dart allows for local function declarations
-    void onTap() => state.editContact(contact, context);
+    void onTap() {
+      // Only if this is the 'current' State object.
+      if (state.endState is _DetailsState) {
+        state.editContact(contact, context);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(title: contact.displayName.text, actions: [
         TextButton(

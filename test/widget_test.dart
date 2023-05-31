@@ -19,9 +19,11 @@ void testMyApp() {
   /// Define a test. The TestWidgets function also provides a WidgetTester
   /// to work with. The WidgetTester allows you to build and interact
   /// with widgets in the test environment.
-  testWidgets('app_template testing', (WidgetTester tester) async {
+  testWidgets('contacts_demo testing', (WidgetTester tester) async {
     //
-    await tester.pumpWidget(DemoApp());
+    final app = DemoApp();
+
+    await tester.pumpWidget(app);
 
     /// Flutter won’t automatically rebuild your widget in the test environment.
     /// Use pump() or pumpAndSettle() to ask Flutter to rebuild the widget.
@@ -31,9 +33,6 @@ void testMyApp() {
 
     /// Contacts app
     await contactsTest(tester);
-
-    /// Switch the app through the popupmenu
-    await openApplicationMenu(tester);
 
     /// Open the Locale window
     await openLocaleMenu(tester);

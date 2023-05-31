@@ -40,4 +40,5 @@ Map<String, String> ruRU = {
   'to Light Mode': 'в светлый режим',
   'Right Sided': 'Правосторонний',
   'Left Sided': 'Левосторонний',
+  'Use Material 3': 'Используйте материал 3',
 };

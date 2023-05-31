@@ -12,7 +12,7 @@ import 'font_size.dart' as f;
 import 'sort_items.dart' as s;
 
 /// Controller for the home screen app
-class ContactsController extends AppController {
+class ContactsController extends StateXController {
   ///
   factory ContactsController([StateX? state]) =>
       _this ??= ContactsController._(state);
@@ -27,6 +27,7 @@ class ContactsController extends AppController {
 
   @override
   Future<bool> initAsync() async {
+    //
     final init = await model.initState();
     if (init) {
       await getContacts();
@@ -34,29 +35,14 @@ class ContactsController extends AppController {
     return init;
   }
 
-  /// The assign font size.
-  double? get fontSize => f.fontSize;
-
-  /// Increase the font size.
-  void addFontSize() {
-    f.addFontSize();
-    refresh();
-  }
-
-  /// Decrease the font size.
-  void subFontSize() {
-    f.subFontSize();
-    refresh();
-  }
-
-  /// Indicate if the records are sorted
-  bool get sortedAlpha => s.sortedAlpha;
-
   @override
   bool onAsyncError(FlutterErrorDetails details) {
     /// Supply an 'error handler' routine if something goes wrong
     /// in the corresponding initAsync() routine.
-    /// Returns true if the error was properly handled.
+    /// Returns true to continue despite the error.
+    if (kDebugMode) {
+      print("Handle an asynchronous error in 'ContactsController.' A State object controller!");
+    }
     return false;
   }
 
@@ -65,6 +51,24 @@ class ContactsController extends AppController {
     model.dispose();
     super.dispose();
   }
+
+  /// The assign font size.
+  double? get fontSize => f.fontSize;
+
+  /// Increase the font size.
+  void addFontSize() {
+    f.addFontSize();
+    getContacts().then((value) => super.setState(() {}));
+  }
+
+  /// Decrease the font size.
+  void subFontSize() {
+    f.subFontSize();
+    getContacts().then((value) => super.setState(() {}));
+  }
+
+  /// Indicate if the records are sorted
+  bool get sortedAlpha => s.sortedAlpha;
 
   ///
   Future<List<Contact>> getContacts() async {
@@ -75,16 +79,11 @@ class ContactsController extends AppController {
     return _contacts!;
   }
 
-  ///
-  Future<void> refresh() async {
-    await getContacts();
-    super.setState(() {});
-  }
-
   /// Called by menu option
   Future<List<Contact>> sort() async {
     s.sortedAlpha = !s.sortedAlpha;
-    await refresh();
+    await getContacts();
+    super.setState(() {});
     return _contacts!;
   }
 
@@ -105,7 +104,7 @@ class ContactsController extends AppController {
     if (delete) {
       delete = await contact.delete();
     }
-    await refresh();
+    await getContacts().then((value) => super.setState(() {}));
     return delete;
   }
 }

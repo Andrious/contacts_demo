@@ -24,6 +24,9 @@ class AppMenu {
         case 'interface':
           _con.changeUI();
           break;
+        case 'useMaterial3':
+          _con.material3();
+          break;
         case 'locale':
           await _con.changeLocale();
           break;
@@ -59,6 +62,12 @@ class AppMenu {
         child: Text(
             '${'Interface:'.tr} ${App.useMaterial ? 'Material' : 'Cupertino'}'),
       ),
+      if (App.useMaterial) // Only available in the Material interface
+        PopupMenuItem(
+          key: const Key('useMaterial3'),
+          value: 'useMaterial3',
+          child: _con.useMaterial3ListTile,
+        ),
       PopupMenuItem(
         key: const Key('localeMenuItem'),
         value: 'locale',
